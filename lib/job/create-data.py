@@ -39,24 +39,24 @@ schema = StructType([
     StructField("pk", StringType()),
     StructField("sk", StringType()),
 ])
-for i in range(totalattributes):
-    schema.add(StructField("attribute_{0}".format(i), StringType()))
+for y in range(totalattributes):
+    schema.add(StructField("attribute_{0}".format(y), StringType()))
+
+print (schema)
 
 def generate_data(count):
     data = []
     for i in range(count):
-        pk = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-        sk = ''.join(random.choices(string.ascii_letters, k=10))
-        for i in range(totalattributes):
-            attributes[i] = ''.join(random.choices(string.ascii_letters, k=98))
-        data.append({
-            'pk': pk, 'sk': sk
-        })
-        for i in range(totalattributes):
-            data[i]['attribute_{0}'.format(i)] = attributes[i]
+        item_data = {}
+        item_data['pk'] = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        item_data['sk'] = ''.join(random.choices(string.ascii_letters, k=10))
+        for z in range(totalattributes):
+            item_data['attribute_{0}'.format(z)] = ''.join(random.choices(string.ascii_letters, k=85))
+        data.append(item_data)
     return data
     
 data = generate_data(number_of_items)
+print(data)
 df = spark.createDataFrame(data, schema)
 dynamic_frame = DynamicFrame.fromDF(df, glueContext, "dynamic_frame")
 
