@@ -1,4 +1,6 @@
-# Welcome to your CDK TypeScript project
+# CDK project to create a DynamoDB table and a Glue script
+
+### This project is for generating data for a load test.
 
 ```
 # Deploy
