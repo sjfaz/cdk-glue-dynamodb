@@ -8,9 +8,8 @@ from awsglue.context import GlueContext
 from awsglue.dynamicframe import DynamicFrame
 from awsglue.job import Job
 from datetime import datetime
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+from pyspark.sql.types import StructType, StructField, StringType
 
-## TODO: Implement item_size_kb using parameter input
 ## TODO: Check if this is able to be distributed well
 
 ## @params: [JOB_NAME]
@@ -32,40 +31,29 @@ job.init(args["JOB_NAME"], args)
 
 print('Creating data for table:', datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-## Create dummy data for table
+attributes = {}
+totalattributes = (item_size_kb-1)*10 + 8
 
+## Create dummy data for table
 schema = StructType([
     StructField("pk", StringType()),
     StructField("sk", StringType()),
-    StructField("attribute_1", IntegerType()),
-    StructField("attribute_2", StringType()),
-    StructField("attribute_3", StringType()),
-    StructField("attribute_4", StringType()),
-    StructField("attribute_5", StringType()),
-    StructField("attribute_6", StringType()),
-    StructField("attribute_7", StringType()),
-    StructField("attribute_8", StringType())
 ])
+for i in range(totalattributes):
+    schema.add(StructField("attribute_{0}".format(i), StringType()))
 
 def generate_data(count):
     data = []
     for i in range(count):
         pk = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
         sk = ''.join(random.choices(string.ascii_letters, k=10))
-        attribute_1 = random.randint(18, 99)
-        attribute_2 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_3 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_4 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_5 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_6 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_7 = ''.join(random.choices(string.ascii_letters, k=100))
-        attribute_8 = ''.join(random.choices(string.ascii_letters, k=100))
+        for i in range(totalattributes):
+            attributes[i] = ''.join(random.choices(string.ascii_letters, k=98))
         data.append({
-            'pk': pk, 'sk': sk, 'attribute_1': attribute_1, 'attribute_2': attribute_2,
-            'attribute_3': attribute_3, 'attribute_4': attribute_4,
-            'attribute_5': attribute_5, 'attribute_6': attribute_6,
-            'attribute_7': attribute_7, 'attribute_8': attribute_8,
+            'pk': pk, 'sk': sk
         })
+        for i in range(totalattributes):
+            data[i]['attribute_{0}'.format(i)] = attributes[i]
     return data
     
 data = generate_data(number_of_items)
