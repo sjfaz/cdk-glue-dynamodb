@@ -7,6 +7,8 @@
 cdk deploy
 # To kick off the job
 aws glue start-job-run --job-name CreateDataJob
+# Add more data lata
+aws glue start-job-run --job-name CreateDataJob --arguments='--item_size_kb="2",--number_of_items="5"'
 ```
 
 ## Useful commands

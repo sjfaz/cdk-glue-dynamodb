@@ -13,12 +13,15 @@ export class CdkGlueDynamodbStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    const tableName = "load-test-tbl1";
+
     // DynamoDB Table
     const table = new aws_dynamodb.Table(this, "LoadTestTbl", {
       partitionKey: { name: "pk", type: aws_dynamodb.AttributeType.STRING },
       sortKey: { name: "sk", type: aws_dynamodb.AttributeType.STRING },
       billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: RemovalPolicy.DESTROY,
+      tableName,
+      removalPolicy: RemovalPolicy.RETAIN,
     });
 
     // Can't import python directly due to this bug below, have to go via S3.
@@ -46,8 +49,8 @@ export class CdkGlueDynamodbStack extends Stack {
       jobName: "CreateDataJob",
       defaultArguments: {
         "--table_name": table.tableName,
-        "--item_size_kb": "1",
-        "--number_of_items": "100",
+        "--item_size_kb": "2",
+        "--number_of_items": "100000",
       },
     });
 
