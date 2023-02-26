@@ -13,18 +13,17 @@ export class CdkGlueDynamodbStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const tableName = "load-test-tbl1";
+    const tableName = "ecs-test-tbl2";
 
     // DynamoDB Table
     const table = new aws_dynamodb.Table(this, "LoadTestTbl", {
       partitionKey: { name: "pk", type: aws_dynamodb.AttributeType.STRING },
-      sortKey: { name: "sk", type: aws_dynamodb.AttributeType.STRING },
       billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
       tableName,
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
-    // Can't import python directly due to this bug below, have to go via S3.
+    // Can't import directly due to this bug below, have to go via S3.
     // https://github.com/aws/aws-cdk/issues/20481
 
     const glue_s3_asset = new aws_s3_assets.Asset(this, "asset", {
@@ -43,9 +42,9 @@ export class CdkGlueDynamodbStack extends Stack {
       }),
       description: "Python ETL job to copy table to another account",
       workerType: glue.WorkerType.G_1X,
-      workerCount: 3,
+      workerCount: 5,
       maxRetries: 0,
-      timeout: Duration.minutes(60),
+      timeout: Duration.minutes(30),
       jobName: "CreateDataJob",
       defaultArguments: {
         "--table_name": table.tableName,

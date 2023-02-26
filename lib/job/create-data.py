@@ -37,7 +37,7 @@ totalattributes = (item_size_kb-1)*10 + 8
 ## Create dummy data for table
 schema = StructType([
     StructField("pk", StringType()),
-    StructField("sk", StringType()),
+    # StructField("sk", StringType()),
 ])
 for y in range(totalattributes):
     schema.add(StructField("attribute_{0}".format(y), StringType()))
@@ -48,15 +48,14 @@ def generate_data(count):
     data = []
     for i in range(count):
         item_data = {}
-        item_data['pk'] = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-        item_data['sk'] = ''.join(random.choices(string.ascii_letters, k=10))
+        item_data['pk'] = 'p#000{0}'.format(i)
         for z in range(totalattributes):
             item_data['attribute_{0}'.format(z)] = ''.join(random.choices(string.ascii_letters, k=85))
         data.append(item_data)
     return data
     
 data = generate_data(number_of_items)
-print(data)
+# print(data)
 df = spark.createDataFrame(data, schema)
 dynamic_frame = DynamicFrame.fromDF(df, glueContext, "dynamic_frame")
 
@@ -66,9 +65,9 @@ glueContext.write_dynamic_frame_from_options(
 frame=dynamic_frame,
 connection_type="dynamodb",
 connection_options={
-"dynamodb.region": 'eu-west-1',
-"dynamodb.output.tableName": table_name,
-"dynamodb.throughput.write.percent": "1.0"
+    "dynamodb.region": 'eu-west-1',
+    "dynamodb.output.tableName": table_name,
+    "dynamodb.throughput.write.percent": "1.0"
 }
 )
 
