@@ -4,21 +4,36 @@ import * as cdk from "aws-cdk-lib";
 import { CdkGlueDynamodbStack } from "../lib/cdk-glue-dynamodb-stack";
 
 const app = new cdk.App();
-new CdkGlueDynamodbStack(app, "CdkGlueDynamodbStack", {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
+// Create some tables with the same prefix
+new CdkGlueDynamodbStack(app, "GlueDynamodbStackJavav2Netty", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+  tableName: "ecs-javav2-netty-60",
+});
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+new CdkGlueDynamodbStack(app, "GlueDynamodbStackJavav2CRT", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  tableName: "ecs-javav2-crt-60",
+});
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+new CdkGlueDynamodbStack(app, "GlueDynamodbStackBoto3", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  tableName: "ecs-boto3-60",
+});
+
+new CdkGlueDynamodbStack(app, "GlueDynamodbStackJSv3", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  tableName: "ecs-jsv3-60",
 });
